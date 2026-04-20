@@ -26,13 +26,14 @@ import ichttt.mods.firstaid.common.damagesystem.distribution.RandomDamageDistrib
 import ichttt.mods.firstaid.common.util.CommonUtils;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-
+import net.minecraft.server.level.ServerPlayer;
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -52,8 +53,13 @@ public class PotionPoisonPatched extends MobEffect {
         if (entity instanceof Player && !(entity instanceof FakePlayer) && (FirstAidConfig.SERVER.causeDeathBody.get() || FirstAidConfig.SERVER.causeDeathHead.get())) {
             if (entity.level().isClientSide || !entity.isAlive() || entity.isInvulnerableTo(entity.damageSources().magic()))
                 return;
-            if (entity.isSleeping())
-                entity.stopSleeping();
+
+            ServerPlayer serverPlayer = (ServerPlayer) entity;
+            if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.SURVIVAL)
+                return;
+
+            if (entity.isSleeping()) entity.stopSleeping();
+
             Player player = (Player) entity;
             AbstractPlayerDamageModel playerDamageModel = CommonUtils.getDamageModel(player);
             if (playerDamageModel == null) return;
