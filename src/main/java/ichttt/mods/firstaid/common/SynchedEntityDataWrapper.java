@@ -67,6 +67,14 @@ public class SynchedEntityDataWrapper extends SynchedEntityData {
         return parent.get(key);
     }
 
+    @Override
+    public <T> boolean hasItem(EntityDataAccessor<T> key) {
+        // Mods can attach extra tracked entity data to Entity/Player and guard every access
+        // with hasItem(...) before reading or writing it. If we do not delegate this lookup
+        // to the wrapped data container, those mod-defined fields appear to be missing on players.
+        return parent.hasItem(key);
+    }
+
     public <T> void set_impl(@Nonnull EntityDataAccessor<T> key, @Nonnull T value) {
         parent.set(key, value);
     }
@@ -132,6 +140,28 @@ public class SynchedEntityDataWrapper extends SynchedEntityData {
             }
         }
         set_impl(key, value);
+    }
+
+    @Override
+    public <T> void set(@Nonnull EntityDataAccessor<T> key, @Nonnull T value, boolean force) {
+        if (!force) {
+            set(key, value);
+            return;
+        }
+
+        // Keep FirstAid's health/absorption interception centralized in set(...), but preserve
+        // forced synced-data writes for every other tracked field owned by vanilla or other mods.
+        if (!track) {
+            if (key != LivingEntity.DATA_HEALTH_ID)
+                parent.set(key, value, true);
+            return;
+        }
+
+        if (key == Player.DATA_PLAYER_ABSORPTION_ID || key == LivingEntity.DATA_HEALTH_ID) {
+            set(key, value);
+        } else {
+            parent.set(key, value, true);
+        }
     }
 
 
