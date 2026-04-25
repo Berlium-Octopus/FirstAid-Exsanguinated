@@ -98,9 +98,10 @@ public class ClientEventHandler {
             Minecraft mc = Minecraft.getInstance();
             AbstractPlayerDamageModel damageModel = CommonUtils.getDamageModel(mc.player);
             if (damageModel == null) return;
-            if (!damageModel.hasTutorial) {
+            if (!damageModel.hasTutorial ) {
                 damageModel.hasTutorial = true;
                 CapProvider.tutorialDone.add(mc.player.getName().getString());
+                if (FirstAidConfig.GENERAL.noTutorial) return;
                 Minecraft.getInstance().setScreen(new GuiTutorial());
             }
             else {
