@@ -306,7 +306,6 @@ public class FirstAidConfig {
                             "Only enable for special purposes")
                     .translation("firstaid.config.debug")
                     .define("debug", false);
-            builder.pop();
 
             noTutorial = builder
                     .comment("Removes the tutorial")

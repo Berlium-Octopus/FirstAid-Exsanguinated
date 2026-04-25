@@ -19,6 +19,7 @@
 package ichttt.mods.firstaid.common.network;
 
 import ichttt.mods.firstaid.FirstAid;
+import ichttt.mods.firstaid.FirstAidConfig;
 import ichttt.mods.firstaid.api.damagesystem.AbstractPlayerDamageModel;
 import ichttt.mods.firstaid.client.ClientHooks;
 import ichttt.mods.firstaid.client.HUDHandler;
@@ -61,7 +62,7 @@ public class MessageConfiguration {
                 AbstractPlayerDamageModel damageModel = CommonUtils.getDamageModel(Minecraft.getInstance().player);
                 if (damageModel == null) return;
                 damageModel.deserializeNBT(message.playerDamageModel);
-                if (damageModel.hasTutorial)
+                if (damageModel.hasTutorial || FirstAidConfig.GENERAL.noTutorial.get())
                     CapProvider.tutorialDone.add(Minecraft.getInstance().player.getName().getString());
                 else
                     Minecraft.getInstance().player.sendSystemMessage(Component.literal("[First Aid] " + I18n.get("firstaid.tutorial.hint", ClientHooks.SHOW_WOUNDS.getTranslatedKeyMessage().getString())));
