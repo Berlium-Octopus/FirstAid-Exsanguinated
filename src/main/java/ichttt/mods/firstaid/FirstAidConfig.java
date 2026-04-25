@@ -307,8 +307,14 @@ public class FirstAidConfig {
                     .translation("firstaid.config.debug")
                     .define("debug", false);
             builder.pop();
-        }
 
+            noTutorial = builder
+                    .comment("Removes the tutorial")
+                    .translation("firstaid.config.notutorial")
+                    .define("tutorial", false);
+            builder.pop();
+        }
+        public final ForgeConfigSpec.BooleanValue noTutorial;
         public final ForgeConfigSpec.BooleanValue debug;
     }
 
