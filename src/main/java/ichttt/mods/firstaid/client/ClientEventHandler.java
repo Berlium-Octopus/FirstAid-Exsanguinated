@@ -101,7 +101,7 @@ public class ClientEventHandler {
             if (!damageModel.hasTutorial ) {
                 damageModel.hasTutorial = true;
                 CapProvider.tutorialDone.add(mc.player.getName().getString());
-                if (FirstAidConfig.GENERAL.noTutorial) return;
+                if (FirstAidConfig.GENERAL.noTutorial.get()) return;
                 Minecraft.getInstance().setScreen(new GuiTutorial());
             }
             else {
